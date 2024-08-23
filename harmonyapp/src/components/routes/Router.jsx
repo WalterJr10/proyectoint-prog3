@@ -11,6 +11,8 @@ import Songs from "../Songs";
 import SongCreate from "../SongCreate";
 import ArtistaCreate from "../ArtistaCreate";
 import NotFound from "../NotFound404";
+import { PlaylistCard } from "../PlaylistCard";
+import { PlaylistView } from "../PlaylistView";
 
 
 
@@ -45,11 +47,26 @@ const Router = createBrowserRouter([
             },
             {
                 path: "/playlists",
-                element: (
-                    <ProtectedRoute>
-                        <Playlists />
-                    </ProtectedRoute>
-                )
+                children: [
+                    {
+                        index: true,
+                        element: (
+                            (
+                                <ProtectedRoute>
+                                    <Playlists />
+                                </ProtectedRoute>
+                            )
+                        ),
+                    },
+                    {
+                        path: ":id",
+                        element: (
+                                <ProtectedRoute>
+                                    <PlaylistView />
+                                </ProtectedRoute>
+                        )
+                    },
+                ],
             },
             {
                 path: "/artistas",
