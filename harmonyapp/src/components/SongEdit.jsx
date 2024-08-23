@@ -95,7 +95,7 @@ export default function SongEdit({ isOpen, onClose, song_id  }) {
     if (!isOpen) return null;
 
     return (
-        <div>
+        <div className=''>
             <div className='section'>
                 <p className='title'>Editar cancion</p>
                 {isLoading ? <h3>Cargando...</h3> : null }

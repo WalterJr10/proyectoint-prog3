@@ -13,6 +13,7 @@ function Profile() {
 
 
     useEffect(() => {
+        setIsLoading(true);
         fetch(`${import.meta.env.VITE_API_BASE_URL}users/profiles/profile_data`,{
             method: "GET",
             headers: {
@@ -36,7 +37,7 @@ function Profile() {
             })
     },[])
 
-
+    if(isloading) return <p>Cargando profile...</p>
     return(
         <div>
             {userData ? (
@@ -84,8 +85,12 @@ function Profile() {
                     </form>
                     <p className="subtitle is-6"> {userData.bio || "Biografia no disponible"} </p>
                     <div className="columns">
-                        <a className="button is-link is-dark" href="/">Inicio</a>
-                        <button className="button is-danger is-dark" onClick={()=>logout()}>Cerrar sesion</button>
+                        <div className="column">
+                            <a className="button is-link is-dark" href="/">Inicio</a>
+                        </div>
+                        <div className="column">
+                            <button className="button is-danger is-dark" onClick={()=>logout()}>Cerrar sesion</button>
+                        </div>
                     </div>
 
                 </div>

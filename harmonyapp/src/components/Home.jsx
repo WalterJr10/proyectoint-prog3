@@ -6,6 +6,8 @@ import { useAuth } from './contexts/AuthContext';
 
 function Home() {
 
+    const { token } = useAuth("state");
+
     const urlApi = `${import.meta.env.VITE_API_BASE_URL}/docs/`
 
     return (
@@ -15,12 +17,18 @@ function Home() {
                     <ul className='navbar-brand'>
                         <li className='navbar-item'><a className='button is-link is-dark is-outlined' href={urlApi}>Api</a></li>
                         <li className='navbar-item'><a className='button is-link is-dark is-outlined' href="/contacto">Contacto</a></li>
-                        <li className='navbar-item'><a className='button is-primary is-dark is-outlined' href="/login">Iniciar sesion</a></li>
+                        {token ? (
+                            <li className='navbar-item'><a className='button is-primary is-dark is-outlined' href="/profile">Mi perfil</a></li>
+
+                        ) : (
+                            <li className='navbar-item'><a className='button is-primary is-dark is-outlined' href="/login">Iniciar sesion</a></li>
+
+                        )}
                     </ul>
                 </nav>
             </div>
             <section className="section has-text-centered">
-                <h1 className="title has-text-primary-white" >Welcome to music app</h1>
+                <h1 className="title has-text-primary-white" >Bienvenido a la App de musica</h1>
                 
                 <div className='content'>
                     <h3 className="subtitle has-text-info-light">En esta aplicacion se encuentran Playlists, Artistas y Canciones</h3>
