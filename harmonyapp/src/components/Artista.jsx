@@ -9,15 +9,22 @@ function Artista() {
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
     const [ultimosArtistas, setUltimosArtistas] = useState([]);
+    const [filter, setFilter] = useState({});
+
 
     const { token , user__id } = useAuth("state");
 
 
     let url = `${import.meta.env.VITE_API_BASE_URL}harmonyhub/artists/?page=${pagina}`
 
+
     const doFetch = async () => {
         setIsLoading(true)
-        fetch(url)
+        let params = new URLSearchParams({
+            page: pagina,
+            ...filter
+        }).toString();
+        fetch(`${import.meta.env.VITE_API_BASE_URL}harmonyhub/artists/?${params}`)
             .then((response) => {
                 if(!response.ok){
                     throw new Error('Solicitud a los artistas erroneo')
@@ -37,6 +44,26 @@ function Artista() {
             .finally(() => {
                 setIsLoading(false)
             })
+
+    }
+
+    function handleFiltrar(e){
+        e.preventDefault();
+        setUltimosArtistas([])
+        
+        const filterForm = new FormData(e.target);
+
+        const newFilter = {}
+
+        filterForm.forEach((value, key) => {
+            if(value) {
+                newFilter[key] = value
+            }
+        });
+
+        setFilter(newFilter);
+        setArtists([]);
+        setPagina(1);        
 
     }
 
@@ -72,7 +99,9 @@ function Artista() {
     
     useEffect(() => {
         doFetch();
-    }, [pagina]);
+    }, [pagina, filter]);
+
+
 
     return (
         <div className='container'>
@@ -83,16 +112,25 @@ function Artista() {
                     <a className='button is-link m-4' href="/songs">Canciones</a>
                 </header>
             </div>
-            <div className="my-5">
+            <div className="m-4">
                 <h1 className='title'>Artistas</h1>
                 <div className='my-4'>
                     <a className='button is-primary' href="/artistas/new">Crear artista</a>
                 </div>
+
+                <div className='is-flex is-justify-content my-3'>
+                    <form className='box' onSubmit={handleFiltrar}>
+                        <label htmlFor="title" className='label'>Buscar artista</label>
+                        <input type="text" className='input' name='name' />
+                        <button className='button is-dark is-primary my-3'>Buscar</button>
+                    </form>
+                </div>
+
                 <div className='container content is-normal'>
                     <button className='button is-primary' onClick={handleOrder}>Ver ultimos artistas creados</button>
                     {ultimosArtistas ? (                    
                         <div className='content'>
-                            <ul>
+                            <ul className='p-3'>
                                 {ultimosArtistas.map((lastArtist) => (
                                     <ArtistaCard key={lastArtist.id} artist={lastArtist} userId={user__id} />
                                 ))}

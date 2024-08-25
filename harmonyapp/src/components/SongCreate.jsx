@@ -5,15 +5,22 @@ function SongCreate() {
 
     const { token } = useAuth("state");
 
+    const [file, setFile] = useState(null)
     const [cancion, setCancion] = useState({
         title: "",
-        year: 0
+        year: 0,
+        song_file: file
     })
 
     const [cancionCreada, setCancionCreada] = useState(null)
 
     /* estado para no enviar multiples peticiones a la API y comprobar campos */
     const [submitting, setSubmitting] = useState(false);
+
+    function handleArchiveChange(e){
+        setFile(e.target.files[0]);
+
+    }
 
     function handleInputChange(event){
         setCancion({
@@ -29,6 +36,8 @@ function SongCreate() {
             const newForm = new FormData();
             newForm.append("title", cancion.title);
             newForm.append("year", cancion.year);
+            newForm.append("song_file", file);
+
 
             fetch(`${import.meta.env.VITE_API_BASE_URL}harmonyhub/songs/`,{
                 method: "POST",
@@ -86,6 +95,15 @@ function SongCreate() {
                             onChange={handleInputChange}
                         />
                     </div>
+                    <div>
+                        <label className='label is-size-4 media'>Archivo</label>
+                        <input 
+                            type="file"
+                            accept="audio/*"
+                            onChange={handleArchiveChange}
+
+                        />
+                    </div>
                     <div className='mt-5'>
                         <button
                             className='button is-dark is-success'
@@ -104,6 +122,17 @@ function SongCreate() {
                     <p className='subtitle m-3'>Año: <span>{cancionCreada.year}</span></p>
                     <p className='subtitle m-3'>ID Creador: <span>{cancionCreada.owner}</span></p>
                     <p className='subtitle m-3'>Fecha de creacion: <span>{cancionCreada.created_at}</span></p>
+                    {cancionCreada.song_file ? (
+                        <div>
+                            <p className='subtitle m-3'>Escuchar</p>
+                            <audio controls>
+                                <source src={cancionCreada.song_file} type="audio/mpeg" />
+                                    Tu navegador no soporta el elemento de audio.
+                            </audio>
+
+                        </div>
+                    ) : null}
+                    
                 </div>
             ) : null }
             <a className='mt-4' href="/songs">Volver</a>
